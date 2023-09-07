@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
+import {useEffect} from "react";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -7,16 +8,20 @@ export default function Home() {
   'use strict';
 
 // Selecting elements
-  const player0EL = document.querySelector('.player--0')
-  const player1EL = document.querySelector('.player--1')
-  const score0EL = document.getElementById('score--0')
-  const score1EL = document.getElementById('score--1')
-  const current0EL = document.getElementById('current--0')
-  const current1EL = document.getElementById('current--1')
-  const diceEL = document.querySelector('.dice');
-  const btnNew = document.querySelector('.btn--new')
-  const btnRoll = document.querySelector('.btn--roll')
-  const btnHold = document.querySelector('.btn--hold')
+  useEffect(() => {
+    // This code will only run on the client side after the component is mounted.
+    // Selecting elements
+    const player0EL = document.querySelector('.player--0')
+    const player1EL = document.querySelector('.player--1')
+    const score0EL = document.getElementById('score--0')
+    const score1EL = document.getElementById('score--1')
+    const current0EL = document.getElementById('current--0')
+    const current1EL = document.getElementById('current--1')
+    const diceEL = document.querySelector('.dice');
+    const btnNew = document.querySelector('.btn--new')
+    const btnRoll = document.querySelector('.btn--roll')
+    const btnHold = document.querySelector('.btn--hold')
+
 
 // Starting conditions
 
@@ -92,6 +97,8 @@ export default function Home() {
   })
 
   btnNew.addEventListener('click', init)
+
+  }, []);
 
 
   return (
