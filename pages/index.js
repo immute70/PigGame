@@ -60,7 +60,7 @@ export default function Home() {
       const dice = Math.trunc(Math.random() * 6) + 1;
       // 2. Display a dice
       diceEL.classList.remove('hidden');
-      diceEL.src = `dice-${dice}.svg`
+      diceEL.src = `/images/dice-${dice}.png`
 
       // 3. Check for rolled 1: if true, switch to next player
       if (dice !== 1) {
@@ -120,7 +120,7 @@ export default function Home() {
           </div>
         </section>
 
-        <img src="/images/dice-5.svg" alt="Playing dice" className="dice" />
+        <img src="/images/dice-5.png" alt="Playing dice" className="dice" />
         <button className="btn btn--new">🔄 New game</button>
         <button className="btn btn--roll">🎲 Roll dice</button>
         <button className="btn btn--hold">📥 Hold</button>
