@@ -4,115 +4,119 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  'use strict';
+
+// Selecting elements
+  const player0EL = document.querySelector('.player--0')
+  const player1EL = document.querySelector('.player--1')
+  const score0EL = document.getElementById('score--0')
+  const score1EL = document.getElementById('score--1')
+  const current0EL = document.getElementById('current--0')
+  const current1EL = document.getElementById('current--1')
+  const diceEL = document.querySelector('.dice');
+  const btnNew = document.querySelector('.btn--new')
+  const btnRoll = document.querySelector('.btn--roll')
+  const btnHold = document.querySelector('.btn--hold')
+
+// Starting conditions
+
+  let scores, currentScore, activePlayer, playing;
+  const init = function () {
+    scores = [0, 0]
+    currentScore = 0;
+    activePlayer = 0;
+    playing = true;
+
+    score0EL.textContent = 0;
+    score1EL.textContent = 0;
+    current0EL.textContent = 0;
+    current1EL.textContent = 0;
+
+    diceEL.classList.add('hidden');
+    player0EL.classList.remove('player--winner');
+    player1EL.classList.remove('player--winner');
+    player0EL.classList.add('player--active');
+    player1EL.classList.remove('player--active');
+
+  }
+  init();
+  const switchPlayer = function () {
+    document.getElementById(`current--${activePlayer}`).textContent = 0;
+    currentScore = 0;
+    activePlayer = activePlayer === 0 ? 1 : 0;
+    player0EL.classList.toggle('player--active')
+    player1EL.classList.toggle('player--active')
+  }
+
+// Rolling dice functionality
+  btnRoll.addEventListener('click', function () {
+    if (playing) {
+      // 1. Generating a random dice roll
+      const dice = Math.trunc(Math.random() * 6) + 1;
+      // 2. Display a dice
+      diceEL.classList.remove('hidden');
+      diceEL.src = `dice-${dice}.png`
+
+      // 3. Check for rolled 1: if true, switch to next player
+      if (dice !== 1) {
+        // Add dice to current score
+        currentScore += dice;
+        document.getElementById(`current--${activePlayer}`).textContent = currentScore;
+
+      } else {
+        // Switch to next player
+        switchPlayer();
+      }
+    }
+  })
+
+  btnHold.addEventListener('click', function () {
+    if (playing) {
+      // 1. Add current score to active player`s score
+      scores[activePlayer] += currentScore;
+      document.getElementById(`score--${activePlayer}`).textContent = scores[activePlayer];
+
+      // 2. Check if score player`s score is >= 100
+      if (scores[activePlayer] >= 100) {
+        // Finish the game
+        playing = false
+        diceEL.classList.add('hidden');
+        document.querySelector(`.player--${activePlayer}`).classList.add('player--winner')
+        document.querySelector(`.player--${activePlayer}`).classList.remove('player--active')
+      } else {
+        // Switch to the next player
+        switchPlayer();
+      }
+
+    }
+  })
+
+  btnNew.addEventListener('click', init)
+
+
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">pages/index.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+      <main>
+        <section className="player player--0 player--active">
+          <h2 className="name" id="name--0">Player 1</h2>
+          <p className="score" id="score--0">43</p>
+          <div className="current">
+            <p className="current-label">Current</p>
+            <p className="current-score" id="current--0">0</p>
+          </div>
+        </section>
+        <section className="player player--1">
+          <h2 className="name" id="name--1">Player 2</h2>
+          <p className="score" id="score--1">24</p>
+          <div className="current">
+            <p className="current-label">Current</p>
+            <p className="current-score" id="current--1">0</p>
+          </div>
+        </section>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+        <img src="/images/dice-5.png" alt="Playing dice" className="dice" />
+        <button className="btn btn--new">🔄 New game</button>
+        <button className="btn btn--roll">🎲 Roll dice</button>
+        <button className="btn btn--hold">📥 Hold</button>
+      </main>
   )
 }
